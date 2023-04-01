@@ -1,14 +1,28 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+import { View, FlatList } from 'react-native';
 
-import styles from './tabs.style'
+import TabButton from './TabButton';
+import styles from './tabs.style';
+import { SIZES } from '../../../constants';
 
-const Tabs = () => {
+const Tabs = ({ tabs, activeTab, setActiveTab }) => {
   return (
-    <View>
-      <Text>Tabs</Text>
+    <View style={styles.container}>
+      <FlatList
+        data={tabs}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(tab) => tab}
+        contentContainerStyle={{ columnGap: SIZES.small / 2 }}
+        renderItem={({ item }) => (
+          <TabButton
+            name={item}
+            activeTab={activeTab}
+            onHandleSearchType={() => setActiveTab(item)}
+          />
+        )}
+      />
     </View>
-  )
-}
+  );
+};
 
-export default Tabs
+export default Tabs;

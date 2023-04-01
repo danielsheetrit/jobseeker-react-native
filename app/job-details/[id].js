@@ -25,8 +25,11 @@ import { useFetch } from '../../hooks';
 
 import data from './data';
 
+const tabs = ['About', 'Qualifications', 'Responsibilities'];
+
 const JobDetails = () => {
   const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState(tabs[0]);
 
   const { id } = useSearchParams();
   const router = useRouter();
@@ -81,7 +84,11 @@ const JobDetails = () => {
               companyName={data[0].employer_name}
               location={data[0].job_country}
             />
-            <JobTabs />
+            <JobTabs
+              tabs={tabs}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
           </View>
         )}
       </ScrollView>
