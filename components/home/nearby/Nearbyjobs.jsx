@@ -11,14 +11,10 @@ import data from '../popular/data';
 const Nearbyjobs = () => {
   const router = useRouter();
 
-  // const { data, loading, error } = useFetch('search', {
-  //   query: 'React Developer',
-  //   num_pages: 1,
-  // });
-  // console.log(data);
-
-  const loading = false;
-  const error = false;
+  const { data, loading, error } = useFetch('search', {
+    query: 'React Developer',
+    num_pages: 1,
+  });
 
   return (
     <View style={styles.container}>

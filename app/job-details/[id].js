@@ -23,8 +23,6 @@ import {
 import { COLORS, SIZES, icons, images } from '../../constants';
 import { useFetch } from '../../hooks';
 
-import data from './data';
-
 const tabs = ['About', 'Qualifications', 'Responsibilities'];
 
 const JobDetails = () => {
@@ -34,14 +32,42 @@ const JobDetails = () => {
   const { id } = useSearchParams();
   const router = useRouter();
 
-  //   const { data, loading, error, refetch } = useFetch('job-details', {
-  //     job_id: id,
-  //   });
+  const { data, loading, error, refetch } = useFetch('job-details', {
+    job_id: id,
+  });
 
-  console.log(data);
   const onRefresh = () => {};
-  const loading = false;
-  const error = false;
+
+  const displayTabContent = () => {
+    switch (activeTab) {
+      case 'About':
+        return (
+          <JobAbout
+            info={data[0].job_description || 'No Job Description Mentioned'}
+          />
+        );
+      case 'Qualifications':
+        return (
+          <Specifics
+            title="Qualifications"
+            points={data[0].job_highlights?.Qualifications || ['N/A']}
+          />
+        );
+      case 'Responsibilities':
+        return (
+          <Specifics
+            title="Qualifications"
+            points={
+              data[0].job_highlights?.Responsibilities || [
+                'No Responsibilities Mentioned',
+              ]
+            }
+          />
+        );
+      default:
+        break;
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
@@ -50,7 +76,7 @@ const JobDetails = () => {
           headerStyle: { backgroundColor: COLORS.lightWhite },
           headerShadowVisible: false,
           headerBackVisible: false,
-          headerTitle: 'lala',
+          headerTitle: '',
           headerLeft: () => (
             <ScreenHeaderBtn
               iconUrl={icons.left}
@@ -89,9 +115,15 @@ const JobDetails = () => {
               activeTab={activeTab}
               setActiveTab={setActiveTab}
             />
+
+            {displayTabContent()}
           </View>
         )}
       </ScrollView>
+
+      <JobFooter
+        url={data[0]?.job_google_link || 'Job is not applicable at the moment'}
+      />
     </SafeAreaView>
   );
 };

@@ -13,17 +13,15 @@ import { COLORS, SIZES } from '../../../constants';
 
 import { useFetch } from '../../../hooks';
 import PopularJobCard from '../../common/cards/popular/PopularJobCard';
-import data from './data'
+import data from './data';
 
 const Popularjobs = () => {
   const router = useRouter();
 
-  // const { data, loading, error } = useFetch('search', {
-  //   query: 'React Developer',
-  //   num_pages: 1,
-  // });
-  const loading = false;
-  const error = false;
+  const { data, loading, error } = useFetch('search', {
+    query: 'React Developer',
+    num_pages: 1,
+  });
 
   return (
     <View style={styles.container}>
