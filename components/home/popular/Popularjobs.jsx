@@ -1,25 +1,26 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import styles from './popularjobs.style';
-import { COLORS, SIZES } from '../../../constants';
+import { SIZES } from '../../../constants';
 
-import { useFetch } from '../../../hooks';
+// import { useFetch } from '../../../hooks';
 import PopularJobCard from '../../common/cards/popular/PopularJobCard';
+import FetchCmpWrapper from '../../fetch-cmp-wrap/FetchCmpWrapper';
 
-const Popularjobs = () => {
+import data from './data';
+
+function Popularjobs() {
   const router = useRouter();
 
-  const { data, loading, error } = useFetch('search', {
-    query: 'React Developer',
-    num_pages: 1,
-  });
+  // const { data, loading, error } = useFetch('search', {
+  //   query: 'React Developer',
+  //   num_pages: 1,
+  // });
+
+  const loading = false;
+  const error = false;
 
   return (
     <View style={styles.container}>
@@ -32,31 +33,23 @@ const Popularjobs = () => {
       </View>
 
       <View style={styles.cardsContainer}>
-        {loading ? (
-          <ActivityIndicator size="large" color={COLORS.primary} />
-        ) : error ? (
-          <Text>Something went wrong</Text>
-        ) : (
+        <FetchCmpWrapper loading={loading} error={error}>
           <FlatList
             data={data}
             horizontal
-            renderItem={({ item }) => {
-              return (
-                <PopularJobCard
-                  item={item}
-                  handleNavigate={() =>
-                    router.push(`/job-details/${item.job_id}`)
-                  }
-                />
-              );
-            }}
+            renderItem={({ item }) => (
+              <PopularJobCard
+                item={item}
+                handleNavigate={() => router.push(`/job-details/${item.job_id}`)}
+              />
+            )}
             keyExtractor={(item) => item?.job_id}
             contentContainerStyle={{ columnGap: SIZES.medium }}
           />
-        )}
+        </FetchCmpWrapper>
       </View>
     </View>
   );
-};
+}
 
 export default Popularjobs;

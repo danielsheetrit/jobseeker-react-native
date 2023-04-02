@@ -1,20 +1,23 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import styles from './nearbyjobs.style';
-import { COLORS } from '../../../constants';
 import NearbyJobCard from '../../common/cards/nearby/NearbyJobCard';
-import { useFetch } from '../../../hooks';
-
+// import { useFetch } from '../../../hooks';
+import FetchCmpWrapper from '../../fetch-cmp-wrap/FetchCmpWrapper';
 import data from '../popular/data';
 
-const Nearbyjobs = () => {
+function Nearbyjobs() {
   const router = useRouter();
 
-  const { data, loading, error } = useFetch('search', {
-    query: 'React Developer',
-    num_pages: 1,
-  });
+  // const { data, loading, error } = useFetch('search', {
+  //   query: 'React Developer',
+  //   num_pages: 1,
+  // });
+
+  const loading = false;
+  const error = false;
 
   return (
     <View style={styles.container}>
@@ -27,22 +30,18 @@ const Nearbyjobs = () => {
       </View>
 
       <View style={styles.cardsContainer}>
-        {loading ? (
-          <ActivityIndicator size="large" color={COLORS.primary} />
-        ) : error ? (
-          <Text>Something went wrong</Text>
-        ) : (
-          data?.map((job) => (
+        <FetchCmpWrapper loading={loading} error={error}>
+          {data?.map((job) => (
             <NearbyJobCard
               handleNavigate={() => router.push(`/job-details/${job.job_id}`)}
               job={job}
               key={`nearby-job-${job?.job_id}`}
             />
-          ))
-        )}
+          ))}
+        </FetchCmpWrapper>
       </View>
     </View>
   );
-};
+}
 
 export default Nearbyjobs;

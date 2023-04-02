@@ -1,13 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-import {
-  View,
-  Text,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import { View, Text, FlatList, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import styles from './welcome.style';
@@ -15,9 +8,17 @@ import { icons, SIZES } from '../../../constants';
 
 const jobTypes = ['Full-time', 'Part-time', 'Contracor'];
 
-const Welcome = ({ searchTerm, setSearchTerm, handleSearchNavigate }) => {
+function Welcome({ searchTerm, setSearchTerm, handleSearchNavigate }) {
   const [activeJobType, setActiveJobType] = useState(jobTypes[0]);
   const router = useRouter();
+
+  const handlePress = (item) => {
+    setActiveJobType(item);
+
+    if (!searchTerm) return;
+
+    router.push(`/search/${searchTerm + item}`);
+  };
 
   return (
     <View>
@@ -32,19 +33,11 @@ const Welcome = ({ searchTerm, setSearchTerm, handleSearchNavigate }) => {
             style={styles.searchInput}
             value={searchTerm}
             onChangeText={(text) => setSearchTerm(text)}
-            placeholder="What are you looking for?"
           />
         </View>
 
-        <TouchableOpacity
-          style={styles.searchBtn}
-          onPress={handleSearchNavigate}
-        >
-          <Image
-            style={styles.searchBtnImage}
-            resizeMode="contain"
-            source={icons.search}
-          />
+        <TouchableOpacity style={styles.searchBtn} onPress={handleSearchNavigate}>
+          <Image style={styles.searchBtnImage} resizeMode="contain" source={icons.search} />
         </TouchableOpacity>
       </View>
 
@@ -54,10 +47,7 @@ const Welcome = ({ searchTerm, setSearchTerm, handleSearchNavigate }) => {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.tab(activeJobType, item)}
-              onPress={() => {
-                setActiveJobType(item);
-                // useRouter.push(`/search/${item}`);
-              }}
+              onPress={() => handlePress(item)}
             >
               <Text style={styles.tabText(activeJobType, item)}>{item}</Text>
             </TouchableOpacity>
@@ -69,6 +59,6 @@ const Welcome = ({ searchTerm, setSearchTerm, handleSearchNavigate }) => {
       </View>
     </View>
   );
-};
+}
 
 export default Welcome;

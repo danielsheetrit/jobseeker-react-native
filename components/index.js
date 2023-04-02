@@ -15,10 +15,14 @@ import Specifics from './jobdetails/specifics/Specifics';
 // common
 import NearbyJobCard from './common/cards/nearby/NearbyJobCard';
 
-//chat
+// chat
 import Chatbot from './chatbot/Chatbot';
 
+// fetchWrapper
+import FetchCmpWrapper from './fetch-cmp-wrap/FetchCmpWrapper';
+
 export {
+  FetchCmpWrapper,
   Chatbot,
   ScreenHeaderBtn,
   Welcome,

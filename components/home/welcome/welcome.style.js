@@ -38,6 +38,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     paddingHorizontal: SIZES.medium,
+    backgroundColor: 'white',
+    borderRadius: 12
   },
   searchBtn: {
     width: 50,

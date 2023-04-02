@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 
 // eslint-disable-next-line import/no-unresolved
@@ -9,7 +9,8 @@ const useFetch = (endpoint, query) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const options = useMemo(() => ({
+  const options = useMemo(
+    () => ({
       method: 'GET',
       url: `https://jsearch.p.rapidapi.com/${endpoint}`,
       params: {
@@ -19,27 +20,31 @@ const useFetch = (endpoint, query) => {
         'X-RapidAPI-Key': RAPID_API_KEY,
         'X-RapidAPI-Host': RAPID_API_HOST,
       },
-    }), [endpoint, query]);
+    }),
+    [endpoint, query]
+  );
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     setLoading(true);
 
     try {
-      const result = await axios.request(options);
-      setData(result.data.data);
+      // eslint-disable-next-line no-shadow
+      const { data } = await axios.request(options);
+      setData(data.data);
     } catch (err) {
       setError(err);
       // eslint-disable-next-line no-undef
-      alert('There is an error');
+      // alert('There is an error');
     } finally {
       setLoading(false);
     }
-  }, [options]);
+  };
 
   useEffect(() => {
     setLoading(true);
     fetchData();
-  }, [fetchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const refetch = () => {
     setLoading(true);

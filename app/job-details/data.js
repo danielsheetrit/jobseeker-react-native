@@ -1,8 +1,7 @@
-export default data = [
+const data = [
   {
     employer_name: 'Intellisoft Technologies',
-    employer_logo:
-      'https://www.intellisofttech.com/wp-content/themes/intellisoft/images/logo.png',
+    employer_logo: 'https://www.intellisofttech.com/wp-content/themes/intellisoft/images/logo.png',
     employer_website: 'http://www.intellisofttech.com',
     employer_company_type: null,
     job_publisher: 'LinkedIn',
@@ -93,3 +92,5 @@ export default data = [
     ],
   },
 ];
+
+export default data;
