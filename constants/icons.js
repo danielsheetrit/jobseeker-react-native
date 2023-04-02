@@ -8,8 +8,10 @@ import share from '../assets/icons/share.png';
 import location from '../assets/icons/location.png';
 import chevronLeft from '../assets/icons/chevron-left.png';
 import chevronRight from '../assets/icons/chevron-right.png';
+import chat from '../assets/icons/chat.png';
 
 export default {
+  chat,
   heart,
   menu,
   search,

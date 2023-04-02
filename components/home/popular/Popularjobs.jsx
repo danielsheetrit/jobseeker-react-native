@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   View,
   Text,
@@ -13,7 +12,6 @@ import { COLORS, SIZES } from '../../../constants';
 
 import { useFetch } from '../../../hooks';
 import PopularJobCard from '../../common/cards/popular/PopularJobCard';
-import data from './data';
 
 const Popularjobs = () => {
   const router = useRouter();
@@ -43,7 +41,14 @@ const Popularjobs = () => {
             data={data}
             horizontal
             renderItem={({ item }) => {
-              return <PopularJobCard item={item} />;
+              return (
+                <PopularJobCard
+                  item={item}
+                  handleNavigate={() =>
+                    router.push(`/job-details/${item.job_id}`)
+                  }
+                />
+              );
             }}
             keyExtractor={(item) => item?.job_id}
             contentContainerStyle={{ columnGap: SIZES.medium }}

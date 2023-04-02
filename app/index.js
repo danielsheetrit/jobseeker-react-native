@@ -8,10 +8,19 @@ import {
   Popularjobs,
   ScreenHeaderBtn,
   Welcome,
+  Chatbot
 } from '../components';
+
 
 export default function Home() {
   const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearchNavigate = () => {
+    if (!searchTerm.trim() === '') return;
+
+    router.push(`/search/${searchTerm}`);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
@@ -36,13 +45,19 @@ export default function Home() {
             padding: SIZES.medium,
           }}
         >
-          <Welcome />
+          <Welcome
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            handleSearchNavigate={handleSearchNavigate}
+          />
 
           <Popularjobs />
 
           <Nearbyjobs />
         </View>
       </ScrollView>
+
+      <Chatbot />
     </SafeAreaView>
   );
 }

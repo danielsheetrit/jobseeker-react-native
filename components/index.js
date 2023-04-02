@@ -15,7 +15,11 @@ import Specifics from './jobdetails/specifics/Specifics';
 // common
 import NearbyJobCard from './common/cards/nearby/NearbyJobCard';
 
+//chat
+import Chatbot from './chatbot/Chatbot';
+
 export {
+  Chatbot,
   ScreenHeaderBtn,
   Welcome,
   Nearbyjobs,
