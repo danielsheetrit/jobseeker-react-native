@@ -17,7 +17,7 @@ function Welcome({ searchTerm, setSearchTerm, handleSearchNavigate }) {
 
     if (!searchTerm) return;
 
-    router.push(`/search/${searchTerm + item}`);
+    router.push(`/search/${searchTerm} ${item}`);
   };
 
   return (

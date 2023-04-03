@@ -1,69 +1,111 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Button, Modal, TextInput, Image } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  Image,
+  Keyboard,
+  ActivityIndicator,
+} from 'react-native';
+
+import getChatService from '../../services/openai';
 
 import styles from './chatbot.style';
-import { icons } from '../../constants';
+import { COLORS, icons } from '../../constants';
 
-function Chatbot() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+import ChatBody from './chat-body/ChatBody';
+
+const initalDialog = [{ role: 'assistant', content: 'Hi, how can I help you today?' }];
+
+function Chatbot({ isModalOpen, setIsModalOpen }) {
+  const [dialog, setDialog] = useState(initalDialog);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleInputChange = (text) => {
-    setInputValue(text);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleSendInput = () => {
-    // Send the input value to the chatbot endpoint
-    fetch('https://api.openai.com/v1/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer YOUR_API_KEY',
+  const updateDialog = () => {
+    setDialog((prev) => [
+      ...prev,
+      {
+        role: 'user',
+        content: inputValue,
       },
-      body: JSON.stringify({
-        prompt: inputValue,
-        temperature: 0.7,
-        max_tokens: 100,
-        stop: ['\n'],
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Handle the chatbot response
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    ]);
 
-    // Close the modal
-    setIsModalOpen(false);
     setInputValue('');
   };
 
+  const getAnswer = useCallback(async () => {
+    if (dialog.length === 1) return;
+    if (dialog[dialog.length - 1].role === 'assistant') return;
+
+    setIsLoading(true);
+
+    const answer = await getChatService(dialog);
+
+    setDialog((prev) => [
+      ...prev,
+      {
+        role: answer.message.role,
+        content: answer.message.content,
+      },
+    ]);
+
+    setIsLoading(false);
+  }, [dialog]);
+
+  useEffect(() => {
+    getAnswer();
+  }, [dialog, getAnswer]);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardOpen(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardOpen(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
     <View>
-      <TouchableOpacity
-        title="How can I help you?"
-        onPress={() => setIsModalOpen(true)}
-        style={styles.chatButton}
-      >
-        {/* <Text style={styles.chatIcon}>?</Text> */}
+      <TouchableOpacity onPress={() => setIsModalOpen(true)} style={styles.chatButton}>
         <Image style={styles.chatIcon} resizeMode="contain" source={icons.chat} />
       </TouchableOpacity>
-      <Modal visible={isModalOpen} animationType="slide">
+
+      <Modal visible={isModalOpen} animationType="slide" transparent>
         <View style={styles.modalView}>
+          <TouchableOpacity style={styles.exitButton} onPress={() => setIsModalOpen(false)}>
+            <Image style={styles.exitIcon} resizeMode="contain" source={icons.exit} />
+          </TouchableOpacity>
+
+          <View style={{ position: 'absolute', top: 17.5, left: 120 }}>
+            <Text style={styles.chatbotTitle}>ShowJob Chatbot</Text>
+          </View>
+
+          {isLoading && (
+            <View style={styles.loader}>
+              <ActivityIndicator style size="small" color={COLORS.primary} />
+            </View>
+          )}
+
+          <ChatBody style={styles.loader} conversations={dialog} isKeyboardOpen={isKeyboardOpen} />
+
           <TextInput
-            style={styles.inputField}
+            onSubmitEditing={() => updateDialog()}
+            onChangeText={(text) => setInputValue(text)}
+            autoCorrect={false}
             value={inputValue}
-            onChangeText={handleInputChange}
+            style={styles.inputField(isKeyboardOpen)}
+            placeholder="Ask me something..."
           />
-          <Button title="Send" onPress={handleSendInput} />
-          <Button title="Cancel" onPress={handleCloseModal} />
         </View>
       </Modal>
     </View>

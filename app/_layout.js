@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+/* eslint-disable global-require */
+import React, { useCallback } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';

@@ -1,20 +1,15 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, SafeAreaView } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 
 import { COLORS, SIZES, icons, images } from '../constants';
-import {
-  Nearbyjobs,
-  Popularjobs,
-  ScreenHeaderBtn,
-  Welcome,
-  Chatbot
-} from '../components';
-
+import { Nearbyjobs, Popularjobs, ScreenHeaderBtn, Welcome, Chatbot } from '../components';
+import 'react-native-url-polyfill/auto';
 
 export default function Home() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSearchNavigate = () => {
     if (!searchTerm.trim() === '') return;
@@ -28,13 +23,9 @@ export default function Home() {
         options={{
           headerStyle: { backgroundColor: COLORS.lightWhite },
           headerShadowVisible: false,
-          headerLeft: () => (
-            <ScreenHeaderBtn iconUrl={icons.menu} dimension="60%" />
-          ),
-          headerRight: () => (
-            <ScreenHeaderBtn iconUrl={images.profile} dimension="100%" />
-          ),
-          headerTitle: '',
+          headerLeft: () => <ScreenHeaderBtn iconUrl={icons.menu} dimension="60%" />,
+          headerRight: () => <ScreenHeaderBtn iconUrl={images.profile} dimension="100%" />,
+          headerTitle: 'ShowJob',
         }}
       />
 
@@ -57,7 +48,7 @@ export default function Home() {
         </View>
       </ScrollView>
 
-      <Chatbot />
+      <Chatbot isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </SafeAreaView>
   );
 }

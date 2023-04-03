@@ -33,8 +33,6 @@ const useFetch = (endpoint, query) => {
       setData(data.data);
     } catch (err) {
       setError(err);
-      // eslint-disable-next-line no-undef
-      // alert('There is an error');
     } finally {
       setLoading(false);
     }

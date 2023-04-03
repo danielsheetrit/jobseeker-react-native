@@ -1,70 +1,40 @@
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   Image,
   TouchableOpacity,
   View,
+  Text,
+  SafeAreaView,
 } from 'react-native';
 import { Stack, useRouter, useSearchParams } from 'expo-router';
-import { Text, SafeAreaView } from 'react-native';
-import axios from 'axios';
-import { RAPID_API_KEY, RAPID_API_HOST } from '@env';
 
+import { useFetch } from '../../hooks';
 import { ScreenHeaderBtn, NearbyJobCard } from '../../components';
 import { COLORS, icons, SIZES } from '../../constants';
 import styles from '../../styles/search';
 
-const JobSearch = () => {
-  const { term } = useSearchParams();
-  const router = useRouter();
-
-  const [searchResult, setSearchResult] = useState([]);
-  const [searchLoader, setSearchLoader] = useState(false);
-  const [searchError, setSearchError] = useState(null);
+function JobSearch() {
   const [page, setPage] = useState(1);
 
-  const handleSearch = async () => {
-    setSearchLoader(true);
-    setSearchResult([]);
+  const router = useRouter();
+  const { term } = useSearchParams();
 
-    try {
-      const options = {
-        method: 'GET',
-        url: `https://jsearch.p.rapidapi.com/search`,
-        headers: {
-          'X-RapidAPI-Key': RAPID_API_KEY,
-          'X-RapidAPI-Host': RAPID_API_HOST,
-        },
-        params: {
-          query: term,
-          page: page.toString(),
-        },
-      };
-
-      const response = await axios.request(options);
-      setSearchResult(response.data.data);
-    } catch (error) {
-      setSearchError(error);
-      console.log(error);
-    } finally {
-      setSearchLoader(false);
-    }
-  };
+  const { data, loading, error, refetch } = useFetch('search', {
+    query: term,
+    page: page.toString(),
+  });
 
   const handlePagination = (direction) => {
     if (direction === 'left' && page > 1) {
       setPage(page - 1);
-      handleSearch();
+      refetch();
     } else if (direction === 'right') {
       setPage(page + 1);
-      handleSearch();
+      refetch();
     }
   };
-
-  useEffect(() => {
-    handleSearch();
-  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
@@ -79,12 +49,12 @@ const JobSearch = () => {
               handlePress={() => router.back()}
             />
           ),
-          headerTitle: '',
+          headerTitle: 'ShowJob',
         }}
       />
 
       <FlatList
-        data={searchResult}
+        data={data || []}
         renderItem={({ item }) => (
           <NearbyJobCard
             job={item}
@@ -99,11 +69,12 @@ const JobSearch = () => {
               <Text style={styles.searchTitle}>{term}</Text>
               <Text style={styles.noOfSearchedJobs}>Job Opportunities</Text>
             </View>
+
             <View style={styles.loaderContainer}>
-              {searchLoader ? (
+              {loading ? (
                 <ActivityIndicator size="large" color={COLORS.primary} />
               ) : (
-                searchError && <Text>Oops something went wrong</Text>
+                error && <Text>Oops something went wrong</Text>
               )}
             </View>
           </>
@@ -111,32 +82,18 @@ const JobSearch = () => {
       />
 
       <View style={styles.footerContainer}>
-        <TouchableOpacity
-          style={styles.paginationButton}
-          onPress={() => handlePagination('left')}
-        >
-          <Image
-            source={icons.chevronLeft}
-            style={styles.paginationImage}
-            resizeMode="contain"
-          />
+        <TouchableOpacity style={styles.paginationButton} onPress={() => handlePagination('left')}>
+          <Image source={icons.chevronLeft} style={styles.paginationImage} resizeMode="contain" />
         </TouchableOpacity>
         <View style={styles.paginationTextBox}>
           <Text style={styles.paginationText}>{page}</Text>
         </View>
-        <TouchableOpacity
-          style={styles.paginationButton}
-          onPress={() => handlePagination('right')}
-        >
-          <Image
-            source={icons.chevronRight}
-            style={styles.paginationImage}
-            resizeMode="contain"
-          />
+        <TouchableOpacity style={styles.paginationButton} onPress={() => handlePagination('right')}>
+          <Image source={icons.chevronRight} style={styles.paginationImage} resizeMode="contain" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
-};
+}
 
 export default JobSearch;

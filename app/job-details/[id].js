@@ -35,7 +35,7 @@ function JobDetails() {
           headerStyle: { backgroundColor: COLORS.lightWhite },
           headerShadowVisible: false,
           headerBackVisible: false,
-          headerTitle: '',
+          headerTitle: 'ShowJob',
           headerLeft: () => (
             <ScreenHeaderBtn
               iconUrl={icons.left}
