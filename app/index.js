@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, ScrollView, SafeAreaView } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 
+import { useFetch } from '../hooks';
+
 import { COLORS, SIZES, icons, images } from '../constants';
 import { Nearbyjobs, Popularjobs, ScreenHeaderBtn, Welcome, Chatbot } from '../components';
 import 'react-native-url-polyfill/auto';
@@ -10,6 +12,11 @@ export default function Home() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { data, loading, error } = useFetch('search', {
+    query: 'React Developer',
+    num_pages: 1,
+  });
 
   const handleSearchNavigate = () => {
     if (!searchTerm.trim() === '') return;
@@ -42,9 +49,9 @@ export default function Home() {
             handleSearchNavigate={handleSearchNavigate}
           />
 
-          <Popularjobs />
+          <Popularjobs data={data} loading={loading} error={error} />
 
-          <Nearbyjobs />
+          <Nearbyjobs data={data} loading={loading} error={error} />
         </View>
       </ScrollView>
 

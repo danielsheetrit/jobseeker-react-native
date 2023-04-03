@@ -5,22 +5,11 @@ import { useRouter } from 'expo-router';
 import styles from './popularjobs.style';
 import { SIZES } from '../../../constants';
 
-// import { useFetch } from '../../../hooks';
 import PopularJobCard from '../../common/cards/popular/PopularJobCard';
 import FetchCmpWrapper from '../../fetch-cmp-wrap/FetchCmpWrapper';
 
-import data from './data';
-
-function Popularjobs() {
+function Popularjobs({ data, loading, error }) {
   const router = useRouter();
-
-  // const { data, loading, error } = useFetch('search', {
-  //   query: 'React Developer',
-  //   num_pages: 1,
-  // });
-
-  const loading = false;
-  const error = false;
 
   return (
     <View style={styles.container}>

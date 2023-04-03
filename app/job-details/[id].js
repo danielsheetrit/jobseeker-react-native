@@ -4,10 +4,9 @@ import { Stack, useRouter, useSearchParams } from 'expo-router';
 
 import { COLORS, SIZES, icons } from '../../constants';
 
-// import { useFetch } from '../../hooks';
+import { useFetch } from '../../hooks';
 import { Company, JobFooter, JobTabs, ScreenHeaderBtn, FetchCmpWrapper } from '../../components';
 import DisplayCmpJunction from './DisplayCmpJunction';
-import data from './data';
 
 const tabs = ['About', 'Qualifications', 'Responsibilities'];
 
@@ -15,17 +14,18 @@ function JobDetails() {
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
-  // const { id } = useSearchParams();
+  const { id } = useSearchParams();
   const router = useRouter();
 
-  // const { data, loading, error, refetch } = useFetch('job-details', {
-  //   job_id: id,
-  // });
+  const { data, loading, error, refetch } = useFetch('job-details', {
+    job_id: id,
+  });
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    // refetch();
+    refetch();
     setRefreshing(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -51,7 +51,7 @@ function JobDetails() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <FetchCmpWrapper loading={false} error={false}>
+        <FetchCmpWrapper loading={loading} error={error}>
           <View style={{ padding: SIZES.medium, paddingBottom: 100 }}>
             <Company
               companyLogo={data[0].employer_logo}

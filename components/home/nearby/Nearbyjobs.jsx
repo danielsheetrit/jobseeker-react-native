@@ -4,20 +4,10 @@ import { useRouter } from 'expo-router';
 
 import styles from './nearbyjobs.style';
 import NearbyJobCard from '../../common/cards/nearby/NearbyJobCard';
-// import { useFetch } from '../../../hooks';
 import FetchCmpWrapper from '../../fetch-cmp-wrap/FetchCmpWrapper';
-import data from '../popular/data';
 
-function Nearbyjobs() {
+function Nearbyjobs({ data, loading, error }) {
   const router = useRouter();
-
-  // const { data, loading, error } = useFetch('search', {
-  //   query: 'React Developer',
-  //   num_pages: 1,
-  // });
-
-  const loading = false;
-  const error = false;
 
   return (
     <View style={styles.container}>
